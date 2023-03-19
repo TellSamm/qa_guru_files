@@ -1,0 +1,12 @@
+{
+  "name": "Semen",
+   "age": 32,
+  "isClever": true,
+  "hobbies": ["sport", "games", "automationtesting"],
+  "passport": {
+    "number": 2235,
+    "issueDate": "14 MAY 2023"
+  }
+
+
+}

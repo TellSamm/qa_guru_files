@@ -29,9 +29,9 @@ public class FileDowloadTest {
 
 
     @Test
-    void dowloadTest() throws Exception { //Ключевое слово throws используется, чтобы в сигнатуре метода указать, что он выбрасывает исключение.
+    void downloadTest() throws Exception { //Ключевое слово throws используется, чтобы в сигнатуре метода указать, что он выбрасывает исключение.
         Selenide.open("https://github.com/autotests-cloud/qa_guru_first_course/blob/master/README.md");
-        File dowload = $("#raw-url").download();
+        File download = $("#raw-url").download();
         //dowload работает только с кнопками и ссылками которые содержат атрибут href=['***'], бывает что есть кнопка dowload
         //но в ней нет href=['***'], это бывает в 5% случаев из 100% но это нужно знать, но даже в таком случае Selenid может скачивать
         // файлы если сделать конфигурацию Configuration.fileDownload = FileDownloadMode.PROXY;
@@ -50,7 +50,7 @@ public class FileDowloadTest {
         //!InputStream! - если мы не уверены что за файл перед нами то лучше использовать InputStream он прочитает всё, это более универсально.
 
         //Как пишется:
-        try(InputStream readmefile = new FileInputStream(dowload)){
+        try(InputStream readmefile = new FileInputStream(download)){
             byte [] bytes = readmefile.readAllBytes();//прочитать содержимое файла
             String fileAsString = new String(bytes, StandardCharsets.UTF_8); // передаем массив bytes и передаем кодировку UTF-8
             Assertions.assertTrue(fileAsString.contains("qa_guru_first_course")); //проверяем что в файле содержится определенный текст

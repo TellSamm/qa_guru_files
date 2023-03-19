@@ -2,14 +2,18 @@ package sammtell.ru.parsing;
 import com.codeborne.pdftest.PDF;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.xlstest.XLS;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.opencsv.CSVReader;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import sammtell.ru.Human;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static com.codeborne.selenide.Selenide.$;
 
@@ -49,8 +53,42 @@ public class FileParsingTest {
       }
     }
 
+    @Test //этот метод нужно пересмотреть он у меня не работает
+    void filesEqualsTest () throws Exception {
+        Selenide.open("https://github.com/TellSamm/qa_guru_files/blob/main/src/test/resources/book2.csv");
+        File download = $("#raw-url").download();
+        try(InputStream isExpected = cl.getResourceAsStream("expectedFiles/book2.csv");
+            InputStream downloaded = new FileInputStream(download)){
+            Assertions.assertEquals(
+                    new String (isExpected.readAllBytes(), StandardCharsets.UTF_8),
+                    new String(downloaded.readAllBytes(),StandardCharsets.UTF_8)
+            );
+        }
+    }
+
     @Test
-    void (){
+    void zipParseTest()  throws Exception{
+        try( InputStream is = cl.getResourceAsStream("Simple.zip");
+            ZipInputStream zs = new ZipInputStream(is)){
+            ZipEntry entry;
+            while((entry = zs.getNextEntry()) != null){
+                Assertions.assertEquals("Simple.txt",entry.getName());
+            }
+
+        }
+    }
+
+    @Test
+    void jsonCleverTest() throws Exception{
+            Gson gson = new Gson();
+        try( InputStream is = cl.getResourceAsStream("human.json");
+             InputStreamReader isr = new InputStreamReader(is)){
+            Human human = gson.fromJson(isr, Human.class);
+
+            Assertions.assertTrue(human.isClever);
+            Assertions.assertEquals(32,human.age);
+        }
+
 
     }
 }
